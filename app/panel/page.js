@@ -10,6 +10,8 @@ export default function Panel() {
   const [seccion, setSeccion] = useState('inicio')
   const [guardando, setGuardando] = useState(false)
   const [mensaje, setMensaje] = useState('')
+  const [subiendoLogo, setSubiendoLogo] = useState(false)
+  const [subiendoBanner, setSubiendoBanner] = useState(false)
 
   useEffect(() => {
     fetchComercio()
@@ -58,6 +60,62 @@ export default function Panel() {
     await supabase.auth.signOut()
     router.push('/')
   }
+  async function handleLogoUpload(e) {
+  const archivo = e.target.files[0]
+  if (!archivo) return
+  setSubiendoLogo(true)
+  try {
+    const extension = archivo.name.split('.').pop()
+    const nombreArchivo = `${comercio.id}.${extension}`
+    const { error: uploadError } = await supabase.storage
+      .from('logos')
+      .upload(nombreArchivo, archivo, { upsert: true })
+    if (uploadError) throw uploadError
+
+    const { data } = supabase.storage
+      .from('logos')
+      .getPublicUrl(nombreArchivo)
+
+    await supabase.from('comercios')
+      .update({ logo_url: data.publicUrl })
+      .eq('id', comercio.id)
+
+    setComercio({ ...comercio, logo_url: data.publicUrl })
+    setMensaje('¡Logo actualizado!')
+    setTimeout(() => setMensaje(''), 3000)
+  } catch (e) {
+    setError('Error al subir el logo: ' + e.message)
+  }
+  setSubiendoLogo(false)
+}
+async function handleBannerUpload(e) {
+  const archivo = e.target.files[0]
+  if (!archivo) return
+  setSubiendoBanner(true)
+  try {
+    const extension = archivo.name.split('.').pop()
+    const nombreArchivo = `${comercio.id}.${extension}`
+    const { error: uploadError } = await supabase.storage
+      .from('banners')
+      .upload(nombreArchivo, archivo, { upsert: true })
+    if (uploadError) throw uploadError
+
+    const { data } = supabase.storage
+      .from('banners')
+      .getPublicUrl(nombreArchivo)
+
+    await supabase.from('comercios')
+      .update({ banner_url: data.publicUrl })
+      .eq('id', comercio.id)
+
+    setComercio({ ...comercio, banner_url: data.publicUrl })
+    setMensaje('¡Banner actualizado!')
+    setTimeout(() => setMensaje(''), 3000)
+  } catch (e) {
+    setMensaje('Error al subir el banner')
+  }
+  setSubiendoBanner(false)
+ }
 
   if (cargando) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -163,6 +221,44 @@ export default function Panel() {
         {seccion === 'perfil' && (
           <div>
             <p className="text-xl font-medium text-gray-900 mb-6">Mi perfil</p>
+            {/* Logo del negocio */}
+<div className="bg-white border rounded-xl p-6 mb-4 flex items-center gap-6">
+  <div className="w-20 h-20 rounded-2xl bg-green-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
+    {comercio.logo_url ? (
+      <img src={comercio.logo_url} alt={comercio.nombre} className="w-full h-full object-cover"/>
+    ) : (
+      <span className="text-green-700 font-bold text-3xl">{comercio.nombre[0]}</span>
+    )}
+  </div>
+  <div>
+    <p className="text-sm font-medium text-gray-900 mb-1">Logo del negocio</p>
+    <p className="text-xs text-gray-500 mb-3">Sube una imagen cuadrada. Máximo 2MB.</p>
+    <label className="cursor-pointer bg-white border border-gray-200 rounded-lg px-4 py-2 text-sm text-gray-600 hover:bg-gray-50">
+      {subiendoLogo ? 'Subiendo...' : 'Cambiar logo'}
+      <input type="file" accept="image/*" className="hidden"
+        onChange={handleLogoUpload}/>
+    </label>
+  </div>
+  {/* Banner */}
+<div className="bg-white border rounded-xl p-6 mb-4">
+  <p className="text-sm font-medium text-gray-900 mb-1">Foto de portada</p>
+  <p className="text-xs text-gray-500 mb-3">Se muestra como banner en tu perfil. Recomendado 1200x400px.</p>
+  <div className="h-28 rounded-xl overflow-hidden bg-green-100 mb-3">
+    {comercio.banner_url ? (
+      <img src={comercio.banner_url} alt="banner" className="w-full h-full object-cover"/>
+    ) : (
+      <div className="w-full h-full bg-green-200 flex items-center justify-center">
+        <span className="text-green-600 text-sm">Sin foto de portada</span>
+      </div>
+    )}
+  </div>
+  <label className="cursor-pointer bg-white border border-gray-200 rounded-lg px-4 py-2 text-sm text-gray-600 hover:bg-gray-50">
+    {subiendoBanner ? 'Subiendo...' : 'Cambiar portada'}
+    <input type="file" accept="image/*" className="hidden"
+      onChange={handleBannerUpload}/>
+  </label>
+ </div>
+</div>
             {mensaje && <p className="text-green-600 text-sm mb-4 bg-green-50 p-3 rounded-lg">{mensaje}</p>}
             <div className="bg-white border rounded-xl p-6 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">

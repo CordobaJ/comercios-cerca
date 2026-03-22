@@ -69,30 +69,40 @@ export default function PerfilComercio() {
         <span className="text-green-700 font-medium">Comercios cerca</span>
       </nav>
 
-      {/* Banner */}
-      <div className="bg-green-600 h-36"/>
-
-      {/* Info principal */}
-      <div className="max-w-3xl mx-auto px-6">
-        <div className="flex items-end gap-4 -mt-10 mb-6">
-          <div className="w-20 h-20 bg-white border-4 border-white rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0">
-            <span className="text-green-700 font-bold text-3xl">{comercio.nombre[0]}</span>
-          </div>
-          <div className="pb-2">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-xl font-medium text-gray-900">{comercio.nombre}</h1>
-              <span className={`text-xs px-3 py-1 rounded-full ${
-                comercio.esta_abierto
-                  ? 'bg-green-100 text-green-700'
-                  : 'bg-red-100 text-red-700'
-              }`}>
-                {comercio.esta_abierto ? 'Abierto ahora' : 'Cerrado'}
-              </span>
-            </div>
-            <p className="text-sm text-gray-500">{comercio.categoria} · {comercio.ciudad}</p>
-          </div>
-        </div>
-
+     {/* Banner */}
+<div className="h-48 bg-green-600 overflow-hidden">
+  {comercio.banner_url ? (
+    <img src={comercio.banner_url} alt="banner"
+      className="w-full h-full object-cover"/>
+  ) : (
+    <div className="w-full h-full bg-green-600"/>
+  )}
+</div>
+{/* Info principal */}
+<div className="max-w-3xl mx-auto px-6">
+  <div className="flex items-end gap-5 -mt-12 mb-6">
+    <div className="w-24 h-24 bg-white border-4 border-white rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0">
+      {comercio.logo_url ? (
+        <img src={comercio.logo_url} alt={comercio.nombre}
+          className="w-full h-full object-cover rounded-2xl"/>
+      ) : (
+        <span className="text-green-700 font-bold text-4xl">{comercio.nombre[0]}</span>
+      )}
+    </div>
+    <div className="pb-1 flex-1">
+      <div className="flex items-center gap-2 flex-wrap mb-1">
+        <span className={`text-xs px-3 py-1 rounded-full ${
+          comercio.esta_abierto
+            ? 'bg-green-100 text-green-700'
+            : 'bg-red-100 text-red-700'
+        }`}>
+          {comercio.esta_abierto ? 'Abierto ahora' : 'Cerrado'}
+        </span>
+      </div>
+      <h1 className="text-2xl font-medium text-gray-900">{comercio.nombre}</h1>
+      <p className="text-sm text-gray-500">{comercio.categoria} · {comercio.ciudad}</p>
+    </div>
+  </div>
         {/* Info rápida */}
         <div className="flex flex-wrap gap-2 mb-6">
           {comercio.direccion && (

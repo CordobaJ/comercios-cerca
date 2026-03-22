@@ -3,7 +3,6 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
 
-
 export default function Home() {
   const [comercios, setComercios] = useState([])
   const [ciudad, setCiudad] = useState('')
@@ -36,15 +35,14 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      {/* Navbar */}
       <nav className="bg-white border-b px-8 py-4 flex justify-between items-center">
         <span className="text-green-700 font-medium text-lg">Comercios cerca</span>
-        <button className="bg-green-600 text-white px-4 py-2 rounded-full text-sm">
+        <button onClick={() => router.push('/registro')}
+          className="bg-green-600 text-white px-4 py-2 rounded-full text-sm">
           Registra tu negocio
         </button>
       </nav>
 
-      {/* Hero */}
       <div className="bg-green-600 px-8 py-8">
         <p className="text-white text-xl font-medium mb-4">Descubre comercios abiertos ahora</p>
         <input
@@ -52,11 +50,10 @@ export default function Home() {
           placeholder="¿En qué ciudad estás?"
           value={ciudad}
           onChange={e => setCiudad(e.target.value)}
-          className="w-full max-w-sm px-4 py-2 rounded-lg text-sm outline-none"
+          className="w-full max-w-sm px-4 py-2 rounded-lg text-sm outline-none text-gray-900"
         />
       </div>
 
-      {/* Filtros */}
       <div className="bg-white px-8 py-3 flex gap-2 border-b overflow-x-auto">
         {categorias.map(cat => (
           <button
@@ -76,11 +73,10 @@ export default function Home() {
           placeholder="Buscar comercio..."
           value={busqueda}
           onChange={e => setBusqueda(e.target.value)}
-          className="ml-auto border px-3 py-1 rounded-full text-sm outline-none"
+          className="ml-auto border px-3 py-1 rounded-full text-sm outline-none text-gray-900"
         />
       </div>
 
-      {/* Lista de comercios */}
       <div className="px-8 py-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {comerciosFiltrados.length === 0 ? (
           <p className="text-gray-500 col-span-3 text-center py-12">
@@ -88,12 +84,16 @@ export default function Home() {
           </p>
         ) : (
           comerciosFiltrados.map(comercio => (
-            <div key={comercio.id} onClick={() => router.push(`/comercio/${comercio.id}`)} className="bg-white border rounded-xl p-4 cursor-pointer hover:shadow-md transition">
+            <div key={comercio.id}
+              onClick={() => router.push(`/comercio/${comercio.id}`)}
+              className="bg-white border rounded-xl p-4 cursor-pointer hover:shadow-md transition">
               <div className="flex justify-between items-start mb-3">
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-content-center">
-                  <span className="text-green-700 font-bold text-lg pl-3">
-                    {comercio.nombre[0]}
-                  </span>
+                <div className="w-12 h-12 bg-green-100 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0">
+                  {comercio.logo_url ? (
+                    <img src={comercio.logo_url} alt={comercio.nombre} className="w-full h-full object-cover"/>
+                  ) : (
+                    <span className="text-green-700 font-bold text-lg">{comercio.nombre[0]}</span>
+                  )}
                 </div>
                 <span className={`text-xs px-3 py-1 rounded-full ${
                   comercio.esta_abierto
