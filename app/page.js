@@ -1,12 +1,15 @@
 'use client'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
+
 
 export default function Home() {
   const [comercios, setComercios] = useState([])
   const [ciudad, setCiudad] = useState('')
   const [categoria, setCategoria] = useState('Todos')
   const [busqueda, setBusqueda] = useState('')
+  const router = useRouter()
 
   const categorias = ['Todos', 'Restaurante', 'Tienda', 'Servicios', 'Salud']
 
@@ -85,7 +88,7 @@ export default function Home() {
           </p>
         ) : (
           comerciosFiltrados.map(comercio => (
-            <div key={comercio.id} className="bg-white border rounded-xl p-4 cursor-pointer hover:shadow-md transition">
+            <div key={comercio.id} onClick={() => router.push(`/comercio/${comercio.id}`)} className="bg-white border rounded-xl p-4 cursor-pointer hover:shadow-md transition">
               <div className="flex justify-between items-start mb-3">
                 <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-content-center">
                   <span className="text-green-700 font-bold text-lg pl-3">
