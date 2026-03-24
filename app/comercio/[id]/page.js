@@ -166,10 +166,17 @@ export default function PerfilComercio() {
           )}
 
           <button
-            onClick={() => router.push('/login')}
-            className="mt-4 w-full border border-gray-200 rounded-lg py-2.5 text-sm text-gray-600 hover:bg-gray-50">
-            Dejar una valoración
-          </button>
+  onClick={async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+     if (user) {
+       router.push(`/resena?comercio=${id}`)
+     } else {
+       router.push('/login')
+     }
+   }}
+   className="mt-4 w-full border border-gray-200 rounded-lg py-2.5 text-sm text-gray-600 hover:bg-gray-50">
+   Dejar una valoración
+   </button>
         </div>
       </div>
     </main>
