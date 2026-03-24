@@ -12,10 +12,15 @@ export default function Panel() {
   const [mensaje, setMensaje] = useState('')
   const [subiendoLogo, setSubiendoLogo] = useState(false)
   const [subiendoBanner, setSubiendoBanner] = useState(false)
+  const [visualizaciones, setVisualizaciones] = useState(0)
 
   useEffect(() => {
-    fetchComercio()
-  }, [])
+  fetchComercio()
+}, [])
+
+useEffect(() => {
+  if (comercio) fetchVisualizaciones()
+   }, [comercio])
 
   async function fetchComercio() {
     const { data: { user } } = await supabase.auth.getUser()
@@ -116,6 +121,21 @@ async function handleBannerUpload(e) {
   }
   setSubiendoBanner(false)
  }
+async function fetchVisualizaciones() {
+  const { count } = await supabase
+  .from('visualizaciones')
+  .select('*', { count: 'exact' })
+  .eq('comercio_id', comercio.id)
+   setVisualizaciones(count || 0)
+ }
+ async function eliminarComercio() {
+   const confirmar = window.confirm('¿Estás seguro que quieres eliminar tu negocio? Esta acción no se puede deshacer.')
+   if (!confirmar) return
+
+   await supabase.from('comercios').delete().eq('id', comercio.id)
+   await supabase.auth.signOut()
+   router.push('/')
+ }
 
   if (cargando) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -147,7 +167,7 @@ async function handleBannerUpload(e) {
             { id: 'inicio', label: 'Inicio' },
             { id: 'perfil', label: 'Mi perfil' },
             { id: 'horarios', label: 'Horarios' },
-            { id: 'suscripcion', label: 'Suscripción' },
+            { id: 'donacion', label: '💚 Apoyar app' },
           ].map(item => (
             <button key={item.id} onClick={() => setSeccion(item.id)}
               className={`text-left px-3 py-2 rounded-lg text-sm ${
@@ -189,6 +209,10 @@ async function handleBannerUpload(e) {
                 <span className={`w-2 h-2 rounded-full ${comercio.esta_abierto ? 'bg-green-500' : 'bg-gray-400'}`}/>
                 {comercio.esta_abierto ? 'Abierto ahora' : 'Cerrado'}
               </button>
+            </div>
+            <div className="bg-white border rounded-xl p-4">
+              <p className="text-xs text-gray-500 mb-1">Visitas totales</p>
+              <p className="text-lg font-medium text-gray-900">{visualizaciones}</p>
             </div>
 
             {/* Aviso prueba */}
@@ -299,6 +323,14 @@ async function handleBannerUpload(e) {
                 <textarea className="w-full border rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-green-500 resize-none"
                   rows={3} value={comercio.descripcion || ''} onChange={e => setComercio({...comercio, descripcion: e.target.value})}/>
               </div>
+              <div className="border-t pt-4 mt-2">
+            <p className="text-sm font-medium text-gray-900 mb-1">Zona de peligro</p>
+            <p className="text-xs text-gray-500 mb-3">Al eliminar tu negocio se borrarán todos tus datos permanentemente.</p>
+             <button onClick={eliminarComercio}
+               className="px-4 py-2 border border-red-200 text-red-600 rounded-lg text-sm hover:bg-red-50">
+                Eliminar mi negocio
+            </button>
+              </div>
               <button onClick={guardarPerfil} disabled={guardando}
                 className="self-start bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-medium">
                 {guardando ? 'Guardando...' : 'Guardar cambios'}
@@ -318,24 +350,24 @@ async function handleBannerUpload(e) {
         )}
 
         {/* SUSCRIPCIÓN */}
-        {seccion === 'suscripcion' && (
-          <div>
-            <p className="text-xl font-medium text-gray-900 mb-6">Suscripción</p>
-            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
-              <p className="text-sm font-medium text-green-800">Periodo de prueba activo</p>
-              <p className="text-sm text-green-600 mt-1">30 días gratis incluidos al registrarse.</p>
+         {seccion === 'donacion' && (
+            <div>
+              <p className="text-xl font-medium text-gray-900 mb-2">Apoya el proyecto</p>
+               <p className="text-sm text-gray-500 mb-6">Esta app es completamente gratuita. Si te ha sido útil puedes hacer una donación voluntaria para mantenerla funcionando.</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <a href="https://nequi.com.co" target="_blank"
+                    className="bg-pink-500 text-white text-center py-4 rounded-xl font-medium hover:bg-pink-600 transition">
+                <p className="text-2xl mb-1">💸</p>
+                  <p className="text-sm">Donar por Nequi</p>
+             </a>
+                  <a href="https://wompi.com" target="_blank"
+                  className="bg-green-600 text-white text-center py-4 rounded-xl font-medium hover:bg-green-700 transition">
+                  <p className="text-2xl mb-1">💳</p>
+                 <p className="text-sm">Donar por Wompi</p>
+                  </a>
+           </div>
+              <p className="text-xs text-gray-400 text-center mt-4">Cualquier aporte es bienvenido 🙏</p>
             </div>
-            <div className="flex gap-4">
-              <div className={`flex-1 border-2 rounded-xl p-4 ${comercio.plan === 'mensual' ? 'border-green-600' : 'border-gray-200'}`}>
-                <p className="font-medium text-sm text-gray-900">Mensual</p>
-                <p className="text-2xl font-medium text-green-700 mt-1">$18.000<span className="text-sm font-normal text-gray-500">/mes</span></p>
-              </div>
-              <div className={`flex-1 border-2 rounded-xl p-4 ${comercio.plan === 'anual' ? 'border-green-600' : 'border-gray-200'}`}>
-                <p className="font-medium text-sm text-gray-900">Anual</p>
-                <p className="text-2xl font-medium text-green-700 mt-1">$15.000<span className="text-sm font-normal text-gray-500">/mes</span></p>
-              </div>
-            </div>
-          </div>
         )}
 
       </div>

@@ -23,6 +23,9 @@ export default function PerfilComercio() {
       .single()
     setComercio(data)
     setCargando(false)
+
+ // Registrar visualización
+ await supabase.from('visualizaciones').insert({ comercio_id: id })
   }
 
   async function fetchResenas() {
@@ -66,7 +69,7 @@ export default function PerfilComercio() {
           className="text-gray-500 text-sm flex items-center gap-1 hover:text-gray-800">
           ← Volver
         </button>
-        <span className="text-green-700 font-medium">Comercios cerca</span>
+        <span className="text-green-700 font-medium">URA-SHOP</span>
       </nav>
 
      {/* Banner */}

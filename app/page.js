@@ -8,6 +8,7 @@ export default function Home() {
   const [ciudad, setCiudad] = useState('')
   const [categoria, setCategoria] = useState('Todos')
   const [busqueda, setBusqueda] = useState('')
+  const [usuario, setUsuario] = useState(null)
   const router = useRouter()
 
   const categorias = ['Todos', 'Restaurante', 'Tienda', 'Servicios', 'Salud']
@@ -15,6 +16,12 @@ export default function Home() {
   useEffect(() => {
     fetchComercios()
   }, [ciudad, categoria])
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) setUsuario(user)
+    })
+  }, [])
 
   async function fetchComercios() {
     let query = supabase
@@ -35,14 +42,41 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gray-50">
+
+      {/* Navbar */}
       <nav className="bg-white border-b px-8 py-4 flex justify-between items-center">
-        <span className="text-green-700 font-medium text-lg">Comercios cerca</span>
-        <button onClick={() => router.push('/registro')}
-          className="bg-green-600 text-white px-4 py-2 rounded-full text-sm">
-          Registra tu negocio
-        </button>
+        <span className="text-green-700 font-medium text-lg">URA SHOP</span>
+        <div className="flex items-center gap-3">
+          {usuario ? (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-600">
+                Hola, <span className="font-medium text-gray-900">
+                  {usuario.user_metadata?.nombre || usuario.email.split('@')[0]}
+                </span> 👋
+              </span>
+              <button onClick={async () => {
+                await supabase.auth.signOut()
+                setUsuario(null)
+              }} className="text-sm text-gray-500 border px-3 py-1.5 rounded-full hover:bg-gray-50">
+                Salir
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <button onClick={() => router.push('/login')}
+                className="text-sm text-gray-600 border px-3 py-1.5 rounded-full hover:bg-gray-50">
+                Iniciar sesión
+              </button>
+              <button onClick={() => router.push('/registro')}
+                className="bg-green-600 text-white px-4 py-2 rounded-full text-sm">
+                Registra tu negocio
+              </button>
+            </div>
+          )}
+        </div>
       </nav>
 
+      {/* Hero */}
       <div className="bg-green-600 px-8 py-8">
         <p className="text-white text-xl font-medium mb-4">Descubre comercios abiertos ahora</p>
         <input
@@ -54,6 +88,7 @@ export default function Home() {
         />
       </div>
 
+      {/* Filtros */}
       <div className="bg-white px-8 py-3 flex gap-2 border-b overflow-x-auto">
         {categorias.map(cat => (
           <button
@@ -77,6 +112,7 @@ export default function Home() {
         />
       </div>
 
+      {/* Lista de comercios */}
       <div className="px-8 py-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {comerciosFiltrados.length === 0 ? (
           <p className="text-gray-500 col-span-3 text-center py-12">
