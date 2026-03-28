@@ -9,6 +9,8 @@ export default function Home() {
   const [categoria, setCategoria] = useState('Todos')
   const [busqueda, setBusqueda] = useState('')
   const [usuario, setUsuario] = useState(null)
+  const [esAdmin, setEsAdmin] = useState(false)
+  const [tieneNegocio, setTieneNegocio] = useState(false)
   const router = useRouter()
 
   const categorias = ['Todos', 'Restaurante', 'Tienda', 'Servicios', 'Salud']
@@ -18,10 +20,28 @@ export default function Home() {
   }, [ciudad, categoria])
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) setUsuario(user)
-    })
+    verificarUsuario()
   }, [])
+
+  async function verificarUsuario() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    setUsuario(user)
+
+    const { data: admin } = await supabase
+      .from('admins')
+      .select('id')
+      .eq('id', user.id)
+      .single()
+    if (admin) { setEsAdmin(true); return }
+
+    const { data: negocio } = await supabase
+      .from('comercios')
+      .select('id')
+      .eq('usuario_id', user.id)
+      .single()
+    if (negocio) setTieneNegocio(true)
+  }
 
   async function fetchComercios() {
     let query = supabase
@@ -45,7 +65,7 @@ export default function Home() {
 
       {/* Navbar */}
       <nav className="bg-white border-b px-8 py-4 flex justify-between items-center">
-        <span className="text-green-700 font-medium text-lg">URA SHOP</span>
+        <span className="text-green-700 font-medium text-lg">Comercios cerca</span>
         <div className="flex items-center gap-3">
           {usuario ? (
             <div className="flex items-center gap-3">
@@ -54,9 +74,23 @@ export default function Home() {
                   {usuario.user_metadata?.nombre || usuario.email.split('@')[0]}
                 </span> 👋
               </span>
+              {esAdmin && (
+                <button onClick={() => router.push('/admin')}
+                  className="text-sm bg-gray-900 text-white px-3 py-1.5 rounded-full hover:bg-gray-700">
+                  Panel Admin
+                </button>
+              )}
+              {tieneNegocio && !esAdmin && (
+                <button onClick={() => router.push('/panel')}
+                  className="text-sm bg-green-600 text-white px-3 py-1.5 rounded-full hover:bg-green-700">
+                  Mi panel
+                </button>
+              )}
               <button onClick={async () => {
                 await supabase.auth.signOut()
                 setUsuario(null)
+                setEsAdmin(false)
+                setTieneNegocio(false)
               }} className="text-sm text-gray-500 border px-3 py-1.5 rounded-full hover:bg-gray-50">
                 Salir
               </button>
