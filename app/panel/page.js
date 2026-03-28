@@ -166,12 +166,16 @@ export default function Panel() {
           ))}
         </nav>
 
-        <div className="p-3 border-t">
-          <button onClick={cerrarSesion}
-            className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-50">
-            Cerrar sesión
-          </button>
-        </div>
+        <div className="p-3 border-t flex flex-col gap-1">
+  <button onClick={() => router.push('/')}
+    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">
+    ← Ir a la app
+    </button>
+     <button onClick={cerrarSesion}
+      className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-50">
+      Cerrar sesión
+     </button>
+   </div>
       </aside>
 
       {/* Contenido */}
