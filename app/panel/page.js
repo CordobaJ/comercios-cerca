@@ -169,7 +169,7 @@ export default function Panel() {
         <div className="p-3 border-t flex flex-col gap-1">
   <button onClick={() => router.push('/')}
     className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50">
-    ← Ir a la app
+     Ir a la app
     </button>
      <button onClick={cerrarSesion}
       className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-50">

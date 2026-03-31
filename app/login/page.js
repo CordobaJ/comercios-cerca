@@ -144,7 +144,7 @@ export default function Login() {
             {modo === 'olvide' && (
               <button onClick={() => setModo('login')}
                 className="text-sm text-green-600 text-center">
-                ← Volver al login
+                Volver al login
               </button>
             )}
           </div>
