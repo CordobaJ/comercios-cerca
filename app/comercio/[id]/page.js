@@ -114,11 +114,18 @@ export default function PerfilComercio() {
             </span>
           )}
           {comercio.telefono && (
-            <span className="text-xs bg-white border rounded-full px-3 py-1.5 text-gray-600">
-              📞 {comercio.telefono}
-            </span>
-          )}
-        </div>
+  
+      <div href={`https://wa.me/57${comercio.telefono.replace(/\s/g, '')}`}
+    
+       target="_blank"
+    className="text-xs bg-green-50 border border-green-200 rounded-full px-3 py-1.5 text-green-700 hover:bg-green-100 flex items-center gap-1">
+    💬 {comercio.telefono} · WhatsApp
+  </div>
+
+)}
+ </div>
+
+
 
         {/* Descripción */}
         {comercio.descripcion && (
@@ -180,5 +187,7 @@ export default function PerfilComercio() {
         </div>
       </div>
     </main>
+
   )
+  
 }
