@@ -48,7 +48,7 @@ export default function Login() {
     <main className="min-h-screen bg-gray-50 flex flex-col">
       <nav className="bg-white border-b px-8 py-4">
         <span className="text-green-700 font-medium cursor-pointer" onClick={() => router.push('/')}>
-          URA SHOP
+          Cercapp
         </span>
       </nav>
 
