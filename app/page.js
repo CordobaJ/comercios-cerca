@@ -86,6 +86,12 @@ export default function Home() {
                   Mi panel
                 </button>
               )}
+              {!tieneNegocio && !esAdmin && (
+                <button onClick={() => router.push('/registro')}
+                  className="text-sm bg-green-600 text-white px-3 py-1.5 rounded-full hover:bg-green-700">
+                   Registra tu negocio
+                </button>
+              )}
               <button onClick={async () => {
                 await supabase.auth.signOut()
                 setUsuario(null)
