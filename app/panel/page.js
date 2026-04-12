@@ -344,7 +344,7 @@ export default function Panel() {
             <p className="text-xl font-medium text-gray-900 mb-2">Apoya el proyecto</p>
             <p className="text-sm text-gray-500 mb-6">Esta app es completamente gratuita. Si te ha sido útil puedes hacer una donación voluntaria para mantenerla funcionando.</p>
             <div className="grid grid-cols-2 gap-4">
-              <a href="https://nequi.com.co" target="_blank"
+              <a href="https://link.nequi.com.co/3215673678" target="_blank"
                 className="bg-pink-500 text-white text-center py-4 rounded-xl font-medium hover:bg-pink-600 transition">
                 <p className="text-2xl mb-1">💸</p>
                 <p className="text-sm">Donar por Nequi</p>
