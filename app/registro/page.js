@@ -189,7 +189,7 @@ export default function Registro() {
               <p className="text-sm font-medium text-gray-900 mb-1">¿Te gustó la app? 💚</p>
               <p className="text-xs text-gray-500 mb-3">Si quieres apoyar el proyecto puedes hacer una donación voluntaria.</p>
               <div className="flex gap-2">
-                <a href="href="https://link.nequi.com.co/3215673678" target="_blank"
+                <a href="href="https://link.nequi.com.co/3215673678 " target="_blank"
                   className="flex-1 bg-pink-500 text-white text-center py-2 rounded-lg text-xs font-medium">
                   Donar por Nequi
                 </a>
