@@ -186,6 +186,11 @@ export default function Home() {
           ))
         )}
       </div>
+      {/* Footer */}
+      <footer className="bg-white border-t px-8 py-4 flex justify-between items-center mt-8">
+        <p className="text-xs text-gray-400">© 2025 Cercapp</p>
+        <p className="text-xs text-gray-400">Desarrollado por <span className="text-green-600 font-medium">JC.Devp</span></p>
+      </footer>
     </main>
   )
 }
