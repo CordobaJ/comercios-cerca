@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useRouter } from 'next/navigation'
 
@@ -17,6 +17,15 @@ export default function Registro() {
     nombre: '', categoria: '', ciudad: '',
     direccion: '', telefono: '', descripcion: ''
   })
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setCuenta({ nombre: user.user_metadata?.nombre || '', email: user.email, password: '' })
+        setPaso(2)
+      }
+    })
+  }, [])
 
   async function handleRegistro() {
     setCargando(true)
@@ -57,13 +66,11 @@ export default function Registro() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-green-600 px-8 py-6">
         <p className="text-white text-xl font-medium">Registra tu negocio</p>
         <p className="text-green-200 text-sm mt-1">Gratis · Sin tarjeta requerida</p>
       </div>
 
-      {/* Stepper */}
       <div className="bg-white border-b px-8 py-4 flex items-center gap-2">
         {[1,2,3].map(n => (
           <div key={n} className="flex items-center gap-2">
@@ -85,7 +92,6 @@ export default function Registro() {
       <div className="max-w-lg mx-auto px-6 py-8">
         {error && <p className="text-red-600 text-sm mb-4 bg-red-50 p-3 rounded-lg">{error}</p>}
 
-        {/* Paso 1: Cuenta */}
         {paso === 1 && (
           <div className="bg-white rounded-xl border p-6 flex flex-col gap-4">
             <p className="font-medium text-gray-900">Crea tu cuenta</p>
@@ -114,7 +120,6 @@ export default function Registro() {
           </div>
         )}
 
-        {/* Paso 2: Datos del negocio */}
         {paso === 2 && (
           <div className="bg-white rounded-xl border p-6 flex flex-col gap-4">
             <p className="font-medium text-gray-900">Datos de tu negocio</p>
@@ -173,7 +178,6 @@ export default function Registro() {
           </div>
         )}
 
-        {/* Paso 3: Confirmación */}
         {paso === 3 && (
           <div className="bg-white rounded-xl border p-6 flex flex-col gap-4 text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
@@ -181,8 +185,6 @@ export default function Registro() {
             </div>
             <p className="font-medium text-gray-900 text-lg">¡Tu negocio está listo!</p>
             <p className="text-sm text-gray-500">Tu negocio ya es visible para todos los clientes de la app. ¡Totalmente gratis!</p>
-
-            {/* Donación */}
             <div className="bg-gray-50 border rounded-xl p-4 text-left">
               <p className="text-sm font-medium text-gray-900 mb-1">¿Te gustó la app? 💚</p>
               <p className="text-xs text-gray-500 mb-3">Si quieres apoyar el proyecto puedes hacer una donación voluntaria.</p>
@@ -197,7 +199,6 @@ export default function Registro() {
                 </a>
               </div>
             </div>
-
             <button onClick={() => router.push('/panel')}
               className="w-full bg-green-600 text-white py-2.5 rounded-lg text-sm font-medium">
               Ir a mi panel
