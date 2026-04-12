@@ -133,6 +133,20 @@ export default function PerfilComercio() {
             <p className="text-sm text-gray-700 leading-relaxed">{comercio.descripcion}</p>
           </div>
         )}
+        {/* Menú */}
+  {comercio.menu_url && (
+    <div className="bg-white border rounded-xl p-4 mb-6">
+      <p className="font-medium text-gray-900 mb-3">Menú / Servicios</p>
+      {comercio.menu_tipo === 'pdf' ? (
+       <a href={comercio.menu_url} target="_blank"
+         className="flex items-center gap-2 text-sm text-green-600 hover:underline">
+          📄 Ver menú completo en PDF
+       </a>
+      ) : (
+        <img src={comercio.menu_url} alt="menú" className="w-full rounded-lg"/>
+      )}
+   </div>
+)}
 
         {/* Valoraciones */}
         <div className="bg-white border rounded-xl p-6 mb-8">

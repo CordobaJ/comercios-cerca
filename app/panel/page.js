@@ -12,6 +12,7 @@ export default function Panel() {
   const [mensaje, setMensaje] = useState('')
   const [subiendoLogo, setSubiendoLogo] = useState(false)
   const [subiendoBanner, setSubiendoBanner] = useState(false)
+  const [subiendoMenu, setSubiendoMenu] = useState(false)
   const [visualizaciones, setVisualizaciones] = useState(0)
 
   useEffect(() => {
@@ -103,6 +104,26 @@ export default function Panel() {
       setMensaje('Error al subir el banner')
     }
     setSubiendoBanner(false)
+  }
+  async function handleMenuUpload(e) {
+    const archivo = e.target.files[0]
+    if (!archivo) return
+    setSubiendoMenu(true)
+    try {
+      const extension = archivo.name.split('.').pop()
+      const nombreArchivo = `${comercio.id}.${extension}`
+      await supabase.storage.from('menus').upload(nombreArchivo, archivo, { upsert: true })
+      const { data } = supabase.storage.from('menus').getPublicUrl(nombreArchivo)
+      await supabase.from('comercios')
+        .update({ menu_url: data.publicUrl, menu_tipo: extension === 'pdf' ? 'pdf' : 'imagen' })
+        .eq('id', comercio.id)
+      setComercio({ ...comercio, menu_url: data.publicUrl, menu_tipo: extension === 'pdf' ? 'pdf' : 'imagen' })
+        setMensaje('¡Menú actualizado!')
+        setTimeout(() => setMensaje(''), 3000)
+      } catch (e) {
+        setMensaje('Error al subir el menú')
+      }
+      setSubiendoMenu(false)
   }
 
   async function eliminarComercio() {
@@ -262,6 +283,27 @@ export default function Panel() {
                 <input type="file" accept="image/*" className="hidden" onChange={handleBannerUpload}/>
               </label>
             </div>
+            {/* Menú / Carta */}
+  <div className="bg-white border rounded-xl p-6 mb-4">
+    <p className="text-sm font-medium text-gray-900 mb-1">Menú / Carta de servicios</p>
+    <p className="text-xs text-gray-500 mb-3">Sube una imagen o PDF con tu menú o lista de servicios.</p>
+    {comercio.menu_url && (
+      <div className="mb-3">
+        {comercio.menu_tipo === 'pdf' ? (
+          <a href={comercio.menu_url} target="_blank"
+            className="text-sm text-green-600 underline flex items-center gap-1">
+            📄 Ver menú en PDF
+          </a>
+        ) : (
+          <img src={comercio.menu_url} alt="menú" className="w-full max-h-48 object-contain rounded-lg border"/>
+        )}
+      </div>
+    )}
+      <label className="cursor-pointer bg-white border border-gray-200 rounded-lg px-4 py-2 text-sm text-gray-600 hover:bg-gray-50">
+          {subiendoMenu ? 'Subiendo...' : comercio.menu_url ? 'Cambiar menú' : 'Subir menú'}
+            <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleMenuUpload}/>
+           </label>
+          </div>
 
             {/* Datos */}
             <div className="bg-white border rounded-xl p-6 flex flex-col gap-4">
