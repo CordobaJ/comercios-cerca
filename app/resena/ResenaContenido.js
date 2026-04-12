@@ -67,7 +67,7 @@ export default function ResenaContenido() {
           className="text-gray-500 text-sm hover:text-gray-800">
           ← Volver
         </button>
-        <span className="text-green-700 font-medium">Comercios cerca</span>
+        <span className="text-green-700 font-medium">Cercapp</span>
       </nav>
 
       <div className="max-w-lg mx-auto px-6 py-8">

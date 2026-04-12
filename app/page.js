@@ -65,7 +65,7 @@ export default function Home() {
 
       {/* Navbar */}
       <nav className="bg-white border-b px-8 py-4 flex justify-between items-center">
-        <span className="text-green-700 font-medium text-lg">Comercios cerca</span>
+        <span className="text-green-700 font-medium text-lg">Cercapp</span>
         <div className="flex items-center gap-3">
           {usuario ? (
             <div className="flex items-center gap-3">
