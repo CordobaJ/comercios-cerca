@@ -13,9 +13,11 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Cercapp",
-  description: "Descubre comercios abiertos cerca de ti" ,
+  description: "Descubre comercios abiertos cerca de ti",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
-
 export default function RootLayout({ children }) {
   return (
     <html
